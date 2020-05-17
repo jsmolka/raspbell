@@ -18,7 +18,7 @@ using tcp = boost::asio::ip::tcp;
 constexpr auto kWindowW = 500;
 constexpr auto kWindowH = 500;
 
-void alert(const std::string& message)
+static void alert(const std::string& message)
 {
     auto window = SDL_CreateWindow(
         message.c_str(),
@@ -44,6 +44,7 @@ void alert(const std::string& message)
             if (event.type == SDL_QUIT)
                 running = false;
         }
+        SDL_RaiseWindow(window);
     }
 
     SDL_DestroyRenderer(renderer);
@@ -56,8 +57,8 @@ int main(int argc, char* argv[])
     {
         SDL_InitSubSystem(SDL_INIT_VIDEO);
 
-        const char* host = "localhost";
-        const char* port = "8765";
+        const char* host = "192.168.0.141";
+        const char* port = "8844";
 
         boost::asio::io_context ioc;
         
