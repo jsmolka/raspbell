@@ -1,0 +1,11 @@
+# Visual Studio
+.vs
+bin
+build
+*.aps
+*.user
+
+# Python
+*.pyc
+*.pyo
+*.pyd
