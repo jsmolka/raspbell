@@ -20,8 +20,10 @@ constexpr auto kWindowH = 500;
 
 static void alert(const std::string& message)
 {
+    const auto title = "Raspbell Client: " + message;
+
     auto window = SDL_CreateWindow(
-        message.c_str(),
+        title.c_str(),
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         kWindowW,
@@ -57,7 +59,7 @@ int main(int argc, char* argv[])
     {
         SDL_InitSubSystem(SDL_INIT_VIDEO);
 
-        const char* host = "192.168.0.141";
+        const char* host = "192.168.178.111";
         const char* port = "8844";
 
         boost::asio::io_context ioc;
@@ -88,7 +90,7 @@ int main(int argc, char* argv[])
     }
     catch (const std::exception& ex)
     {
-        SDL_ShowSimpleMessageBox(0, "Error", ex.what(), nullptr);
+        SDL_ShowSimpleMessageBox(0, "Raspbell Client Error", ex.what(), nullptr);
     }
     
     SDL_Quit();
