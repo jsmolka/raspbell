@@ -2,11 +2,13 @@ import asyncio
 import RPi.GPIO as GPIO
 import socket
 import websockets
+from datetime import datetime
 
 connected = set()
 
 
 def alert(channel):
+    print(datetime.now(), "Alert")
     for websocket in connected:
         asyncio.run(websocket.send("bell"))
 
@@ -14,13 +16,13 @@ def alert(channel):
 async def register(websocket, path):
     connected.add(websocket)
     try:
-        print(f"client connected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
+        print(datetime.now(), f"client connected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
         while websocket.open:
             await asyncio.sleep(0.1)
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
-        print(f"client disconnected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
+        print(datetime.now(), f"client disconnected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
         connected.remove(websocket)
 
 
@@ -37,7 +39,7 @@ def get_host():
 def main():
     host = get_host()
     port = 8844
-    print(f"starting server {host}:{port}")
+    print(datetime.now(), f"starting server {host}:{port}")
     server = websockets.serve(register, host, port)
 
     GPIO.setmode(GPIO.BCM)
