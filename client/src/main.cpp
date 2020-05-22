@@ -59,11 +59,14 @@ int main(int argc, char* argv[])
     {
         SDL_InitSubSystem(SDL_INIT_VIDEO);
 
-        const char* host = "192.168.178.111";
-        const char* port = "8844";
+        if (argc != 3)
+            throw std::runtime_error(std::string("Usage: ") + argv[0] + " host port");
+
+        const char* host = argv[1];
+        const char* port = argv[2];
 
         boost::asio::io_context ioc;
-        
+
         tcp::resolver resolver(ioc);
         beast::websocket::stream<tcp::socket> ws(ioc);
 
@@ -92,7 +95,7 @@ int main(int argc, char* argv[])
     {
         SDL_ShowSimpleMessageBox(0, "Raspbell Client Error", ex.what(), nullptr);
     }
-    
+
     SDL_Quit();
 
     return 0;

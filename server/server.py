@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import RPi.GPIO as GPIO
 import socket
@@ -8,7 +9,7 @@ connected = set()
 
 
 def alert(channel):
-    print(datetime.now(), "Alert")
+    print(datetime.now(), "alert")
     for websocket in connected:
         asyncio.run(websocket.send("bell"))
 
@@ -36,19 +37,23 @@ def get_host():
     return host
 
 
-def main():
+def main(args):
     host = get_host()
-    port = 8844
-    print(datetime.now(), f"starting server {host}:{port}")
+    port = args.port
     server = websockets.serve(register, host, port)
+    print(datetime.now(), f"starting server {host}:{port}")
 
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(4, GPIO.IN)
-    GPIO.add_event_detect(4, GPIO.FALLING, callback=alert, bouncetime=5000)
+    GPIO.setup(args.pin, GPIO.IN)
+    GPIO.add_event_detect(args.pin, GPIO.FALLING, callback=alert, bouncetime=5000)
 
     asyncio.get_event_loop().run_until_complete(server)
     asyncio.get_event_loop().run_forever()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-port", dest="port", type=int, required=True)
+    parser.add_argument("-pin", dest="pin", type=int, required=True)
+
+    main(parser.parse_args())
