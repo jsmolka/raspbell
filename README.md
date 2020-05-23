@@ -23,7 +23,7 @@ Install the Python requirements.
 pip install -r requirements.txt
 ```
 
-## Windows
+### Windows
 Install SDL2 and boost with [vcpkg](https://github.com/microsoft/vcpkg).
 
 ```
