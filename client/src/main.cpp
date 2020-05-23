@@ -15,20 +15,22 @@ namespace beast = boost::beast;
 
 using tcp = boost::asio::ip::tcp;
 
-constexpr auto kWindowW = 500;
-constexpr auto kWindowH = 500;
-
 static void alert(const std::string& message)
 {
     const auto title = "Raspbell Client: " + message;
 
+    SDL_DisplayMode display;
+    SDL_GetCurrentDisplayMode(0, &display);
+
     auto window = SDL_CreateWindow(
         title.c_str(),
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        kWindowW,
-        kWindowH,
-        SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_INPUT_GRABBED | SDL_WINDOW_MOUSE_CAPTURE
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        display.w, display.h,
+        SDL_WINDOW_FULLSCREEN
+            | SDL_WINDOW_ALWAYS_ON_TOP
+            | SDL_WINDOW_INPUT_GRABBED
+            | SDL_WINDOW_MOUSE_CAPTURE
     );
 
     auto renderer = SDL_CreateRenderer(window, -1, 0);
@@ -43,10 +45,18 @@ static void alert(const std::string& message)
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
-            if (event.type == SDL_QUIT)
+            switch (event.type)
+            {
+            case SDL_QUIT:
                 running = false;
+                break;
+
+            case SDL_KEYDOWN:
+                if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                    running = false;
+                break;
+            }
         }
-        SDL_RaiseWindow(window);
     }
 
     SDL_DestroyRenderer(renderer);
