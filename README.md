@@ -2,7 +2,7 @@
 Send doorbell alerts using a Pi 4 and a sound sensor.
 
 ## Setup
-This project uses a Pi 4 and [sound sensor](https://www.makershop.de/en/sensoren/sound/schall-sensor-modul/). Feel free to read about it in a more detailled [post](https://eggception.de/blog/raspbell/).
+This project uses a Pi 4 and [sound sensor](https://www.makershop.de/en/sensoren/sound/schall-sensor-modul/). Feel free to read about it in a more detailled [post](https://eggception.de/posts/raspbell/).
 
 ## Usage
 Run the server on the Pi.
