@@ -11,7 +11,7 @@ connected = set()
 def alert(channel):
     for websocket in connected:
         print(datetime.now(), f"ping {websocket.remote_address[0]}:{websocket.remote_address[1]}")
-        asyncio.run(websocket.ping())
+        asyncio.run(websocket.send("ping"))
 
 
 async def register(websocket, path):

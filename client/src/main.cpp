@@ -24,8 +24,6 @@ void fail(boost::system::error_code ec, const char* what)
 class Window
 {
 public:
-    Window() = default;
-
     bool isActive() const
     {
         return window && renderer;
@@ -73,8 +71,7 @@ public:
                 break;
 
             case SDL_KEYDOWN:
-                if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-                    close = true;
+                close |= event.key.keysym.scancode == SDL_SCANCODE_ESCAPE;
                 break;
             }
         }
@@ -178,39 +175,21 @@ private:
             std::placeholders::_1,
             std::placeholders::_2
         ));
-
-        ws.control_callback(std::bind(
-            &Session::onControl,
-            shared_from_this(),
-            std::placeholders::_1,
-            std::placeholders::_2
-        ));
     }
 
     void onRead(boost::system::error_code ec, std::size_t transferred)
     {
+        boost::ignore_unused(transferred);
+
         if (ec) return fail(ec, "Read");
+
+        if (!window.isActive())
+            window.show();
 
         buffer.clear();
 
         ws.async_read(buffer, std::bind(
             &Session::onRead,
-            shared_from_this(),
-            std::placeholders::_1,
-            std::placeholders::_2
-        ));
-    }
-
-    void onControl(beast::websocket::frame_type kind, beast::string_view payload)
-    {
-        if (kind == beast::websocket::frame_type::ping)
-        {
-            if (!window.isActive())
-                window.show();
-        }
-
-        ws.control_callback(std::bind(
-            &Session::onControl,
             shared_from_this(),
             std::placeholders::_1,
             std::placeholders::_2
