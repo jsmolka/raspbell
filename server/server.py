@@ -9,9 +9,11 @@ connected = set()
 
 
 def alert(channel):
-    print(datetime.now(), "alert")
+    if len(set) > 0:
+        print(datetime.now(), "ping")
+
     for websocket in connected:
-        asyncio.run(websocket.send("bell"))
+        asyncio.run(websocket.ping())
 
 
 async def register(websocket, path):
