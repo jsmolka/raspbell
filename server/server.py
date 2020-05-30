@@ -9,23 +9,21 @@ connected = set()
 
 
 def alert(channel):
-    if len(set) > 0:
-        print(datetime.now(), "ping")
-
     for websocket in connected:
+        print(datetime.now(), f"ping {websocket.remote_address[0]}:{websocket.remote_address[1]}")
         asyncio.run(websocket.ping())
 
 
 async def register(websocket, path):
     connected.add(websocket)
     try:
-        print(datetime.now(), f"client connected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
+        print(datetime.now(), f"connected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
         while websocket.open:
             await asyncio.sleep(0.1)
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
-        print(datetime.now(), f"client disconnected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
+        print(datetime.now(), f"disconnected {websocket.remote_address[0]}:{websocket.remote_address[1]}")
         connected.remove(websocket)
 
 
@@ -43,7 +41,7 @@ def main(args):
     host = get_host()
     port = args.port
     server = websockets.serve(register, host, port)
-    print(datetime.now(), f"starting server {host}:{port}")
+    print(datetime.now(), f"server {host}:{port}")
 
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(args.pin, GPIO.IN)
